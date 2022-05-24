@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Auto Test Platform</title>
+
+    <style>
+        #head{
+        height = 200px;
+        background-color:#E6E6FA;
+        margin-top:5px;
+        margin-left:5px;
+        border:1px black;
+        overflow: hidden;
+        }
+
+        #head #proName,#head #isChange,#head #casePath,#head #caseId,#head #query{
+        margin-bottom:30px;
+        margin-top:30px;
+        float:left;
+        font-size:16px;
+        }
+
+        #head #proName{
+        margin-left:50px;
+        }
+
+        #head #isChange,#head #casePath,#head #caseId,#head #query{
+        margin-left:150px;
+        }
+
+        #body{
+        clear:both;
+        }
+
+        #foot{
+        clear:both;
+        }
+    </style>
+
+
+</head>
+<body>
+<div>
+    <div id="head">
+        <div id="proName">
+        项目名称：
+            <select id = "proName_sel">
+                <option value="0">全部</option>
+                {% for i in proName_results['data'] %}
+                    <option value="{{ i }}">{{ i }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div id="isChange">
+        是否修改：
+            <select id="isChange_sel">
+                <option value="0">全部</option>
+                <option value="1">是</option>
+                <option value="2">否</option>
+            </select>
+        </div>
+        <div id="casePath">
+        接口路径：<input id="casePath_input" placeholder="请输入接口路径">
+        </div>
+        <div id="caseId">
+        用例id：<input id="caseId_input" placeholder="请输入用例id">
+        </div>
+        <div id="query">
+            <button onclick="queryCase()">查询</button>
+        </div>
+    </div>
+    <div id="body">
+        {{case_results}}
+        {% if length(case_results) == 0%}
+        暂无数据...
+        {% elif length(case_results) > 0 %}
+        有数据！！
+        {% endif %}
+
+    </div>
+    <div id="foot">
+        还没实现的分页器!!!!
+    </div>
+</div>
+
+
+
+</body>
+
+<script type="text/javascript" src="../static/axios.js"></script>
+<script>
+    headers = {"Content-Type": "application/json;charset=utf8"}
+    body = document.getElementById("body")
+
+
+    function queryCase(){
+        let proName = document.getElementById("proName_sel").value
+        let isChange = document.getElementById("isChange_sel").value
+        let casePath = document.getElementById("casePath_input").value
+        let caseSeq = document.getElementById("caseId_input").value
+        axios.post('http://{{host}}/queryCase',{proName:proName,isChange:isChange,casePath:casePath,caseSeq:caseSeq},headers=headers)
+        .then(req => {
+            body.innerHTML = req.data.data
+        })
+    }
+
+    window.onload = function(){
+        queryCase()
+    }
+
+</script>
+
+</html>
